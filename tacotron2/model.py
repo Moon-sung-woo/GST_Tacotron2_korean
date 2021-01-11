@@ -35,6 +35,7 @@ from os.path import abspath, dirname
 sys.path.append(abspath(dirname(__file__)+'/../'))
 from common.layers import ConvNorm, LinearNorm
 from common.utils import to_gpu, get_mask_from_lengths
+from tacotron2.modules import GST
 
 
 class LocationLayer(nn.Module):
@@ -604,7 +605,10 @@ class Tacotron2(nn.Module):
                  decoder_rnn_dim, prenet_dim, max_decoder_steps, gate_threshold,
                  p_attention_dropout, p_decoder_dropout,
                  postnet_embedding_dim, postnet_kernel_size,
-                 postnet_n_convolutions, decoder_no_early_stopping):
+                 postnet_n_convolutions, decoder_no_early_stopping,
+                 ### 여기 추가#########
+                 E, ref_enc_filters, ref_enc_size, ref_enc_strides,
+                 ref_enc_pad, ref_enc_gru_size, token_num, num_heads, n_mels):
         super(Tacotron2, self).__init__()
         self.mask_padding = mask_padding
         self.n_mel_channels = n_mel_channels
@@ -628,6 +632,9 @@ class Tacotron2(nn.Module):
         self.postnet = Postnet(n_mel_channels, postnet_embedding_dim,
                                postnet_kernel_size,
                                postnet_n_convolutions)
+
+        self.gst = GST(E, ref_enc_filters, ref_enc_size, ref_enc_strides,
+                 ref_enc_pad, ref_enc_gru_size, token_num, num_heads, n_mels )  # 여기 추가됨.
 
     def parse_batch(self, batch):
         text_padded, input_lengths, mel_padded, gate_padded, \
@@ -662,7 +669,14 @@ class Tacotron2(nn.Module):
 
         embedded_inputs = self.embedding(inputs).transpose(1, 2)
 
-        encoder_outputs = self.encoder(embedded_inputs, input_lengths)
+
+        ##############################여기 추가#########################################
+        transcript_outputs = self.encoder(embedded_inputs, input_lengths)
+
+        gst_outputs = self.gst(targets)
+        gst_outputs = gst_outputs.expand_as(transcript_outputs)
+        encoder_outputs = transcript_outputs + gst_outputs
+        ###############################################################################
 
         mel_outputs, gate_outputs, alignments = self.decoder(
             encoder_outputs, targets, memory_lengths=input_lengths)

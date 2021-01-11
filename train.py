@@ -77,6 +77,25 @@ def parse_args(parser):
     parser.add_argument('--config-file', action=ParseFromConfigFile,
                          type=str, help='Path to configuration file')
 
+    ################################
+    # reference encoder            #
+    ################################
+
+    parser.add_argument('--E', type=int, default=512)
+    parser.add_argument('--ref_enc_filters', nargs='*', default=[32, 32, 64, 64, 128, 128])
+    parser.add_argument('--ref_enc_size', nargs='*', default=[3, 3])
+    parser.add_argument('--ref_enc_strides', nargs='*', default=[2, 2])
+    parser.add_argument('--ref_enc_pad', nargs='*', default=[1, 1])
+    parser.add_argument('--ref_enc_gru_size', type=int, default=512 // 2)
+
+    # Style Token Layer
+    parser.add_argument('--token_num', type=int, default=10)
+    parser.add_argument('--num_heads', type=int, default=8)
+
+    parser.add_argument('--n_mels', type=int, default=80)
+
+
+
     # training
     training = parser.add_argument_group('training setup')
     training.add_argument('--epochs', type=int, required=True,
@@ -112,25 +131,29 @@ def parse_args(parser):
     optimization.add_argument('--grad-clip', default=5.0, type=float,
                               help='Enables gradient clipping and sets maximum gradient norm value')
 
-    # dataset parameters
+    ################################
+    # Data Parameters             #
+    ################################
     dataset = parser.add_argument_group('dataset parameters')
     dataset.add_argument('--load-mel-from-disk', action='store_true',
                          help='Loads mel spectrograms from disk instead of computing them on the fly')
     dataset.add_argument('--training-files',
-                         default='filelists/ljs_audio_text_train_filelist.txt',
+                         default='filelists/train_file_list.txt',
                          type=str, help='Path to training filelist')
     dataset.add_argument('--validation-files',
-                         default='filelists/ljs_audio_text_val_filelist.txt',
+                         default='filelists/val_file_list.txt',
                          type=str, help='Path to validation filelist')
     dataset.add_argument('--text-cleaners', nargs='*',
                          default=['english_cleaners'], type=str,
                          help='Type of text cleaners for input text')
 
-    # audio parameters
+    ################################
+    # Audio Parameters             #
+    ################################
     audio = parser.add_argument_group('audio parameters')
     audio.add_argument('--max-wav-value', default=32768.0, type=float,
                        help='Maximum audiowave value')
-    audio.add_argument('--sampling-rate', default=22050, type=int,
+    audio.add_argument('--sampling-rate', default=16000, type=int,
                        help='Sampling rate')
     audio.add_argument('--filter-length', default=1024, type=int,
                        help='Filter length')
@@ -156,6 +179,10 @@ def parse_args(parser):
                              required=False, help='Distributed group name')
     distributed.add_argument('--dist-backend', default='nccl', type=str, choices={'nccl'},
                              help='Distributed run backend')
+
+
+
+
 
     benchmark = parser.add_argument_group('benchmark')
     benchmark.add_argument('--bench-class', type=str, default='')
