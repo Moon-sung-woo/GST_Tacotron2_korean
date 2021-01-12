@@ -15,12 +15,12 @@
    ```
 
 ### 3. Audio
-    * sampling rate: 16000
-    * filter length: 1024
-    * hop length: 256
-    * win length: 1024
-    * n_mel: 80
-    * mel_fmin: 0
+* sampling rate: 16000
+* filter length: 1024
+* hop length: 256
+* win length: 1024
+* n_mel: 80
+* mel_fmin: 0
     * mel_fmax: 8000
 
 ### 4. file list
