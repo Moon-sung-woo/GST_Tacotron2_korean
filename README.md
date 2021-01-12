@@ -6,6 +6,7 @@
   * Single Female Voice Actor recorded six diffrent emotions(neutral, happy, sad, angry, disgust, fearful), each with 3,000 sentences. Total 30 hours
 
 ### 2. Text
+ * korean_cleaner 사용
 
 ### 3. Audio
 
