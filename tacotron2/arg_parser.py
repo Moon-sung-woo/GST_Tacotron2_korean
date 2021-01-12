@@ -44,7 +44,7 @@ def tacotron2_parser(parent, add_help=False):
 
     # symbols parameters
     global symbols
-    len_symbols = len(symbols)
+    len_symbols = 80
     symbols = parser.add_argument_group('symbols parameters')
     symbols.add_argument('--n-symbols', default=len_symbols, type=int,
                          help='Number of symbols in dictionary')
@@ -84,7 +84,7 @@ def tacotron2_parser(parent, add_help=False):
     attention = parser.add_argument_group('attention parameters')
     attention.add_argument('--attention-rnn-dim', default=1024, type=int,
                            help='Number of units in attention LSTM')
-    attention.add_argument('--attention-dim', default=128, type=int,
+    attention.add_argument('--attention-dim', default=80, type=int,
                            help='Dimension of attention hidden representation')
 
     # location layer parameters

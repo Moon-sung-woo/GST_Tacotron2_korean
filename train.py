@@ -26,6 +26,7 @@
 # *****************************************************************************
 
 import os
+import sys
 import time
 import argparse
 import numpy as np
@@ -138,13 +139,13 @@ def parse_args(parser):
     dataset.add_argument('--load-mel-from-disk', action='store_true',
                          help='Loads mel spectrograms from disk instead of computing them on the fly')
     dataset.add_argument('--training-files',
-                         default='filelists/train_file_list.txt',
+                         default='filelists/train_file_list3.txt',
                          type=str, help='Path to training filelist')
     dataset.add_argument('--validation-files',
-                         default='filelists/val_file_list.txt',
+                         default='filelists/val_file_list3.txt',
                          type=str, help='Path to validation filelist')
     dataset.add_argument('--text-cleaners', nargs='*',
-                         default=['english_cleaners'], type=str,
+                         default=['korean_cleaners'], type=str,
                          help='Type of text cleaners for input text')
 
     ################################
@@ -179,10 +180,6 @@ def parse_args(parser):
                              required=False, help='Distributed group name')
     distributed.add_argument('--dist-backend', default='nccl', type=str, choices={'nccl'},
                              help='Distributed run backend')
-
-
-
-
 
     benchmark = parser.add_argument_group('benchmark')
     benchmark.add_argument('--bench-class', type=str, default='')
@@ -311,7 +308,7 @@ def validate(model, criterion, valset, epoch, batch_iter, batch_size,
     """Handles all the validation scoring and printing"""
     with evaluating(model), torch.no_grad():
         val_sampler = DistributedSampler(valset) if distributed_run else None
-        val_loader = DataLoader(valset, num_workers=1, shuffle=False,
+        val_loader = DataLoader(valset, num_workers=4, shuffle=False,
                                 sampler=val_sampler,
                                 batch_size=batch_size, pin_memory=False,
                                 collate_fn=collate_fn)
@@ -373,6 +370,10 @@ def adjust_learning_rate(iteration, epoch, optimizer, learning_rate,
 
 
 def main():
+
+    #-----------------------------------------------------------------------------------
+    # sys.stdout = open('check.txt', 'w')
+    #-----------------------------------------------------------------------------------
 
     parser = argparse.ArgumentParser(description='PyTorch Tacotron 2 Training')
     parser = parse_args(parser)
@@ -461,7 +462,7 @@ def main():
         train_sampler = None
         shuffle = True
 
-    train_loader = DataLoader(trainset, num_workers=1, shuffle=shuffle,
+    train_loader = DataLoader(trainset, num_workers=4, shuffle=shuffle,
                               sampler=train_sampler,
                               batch_size=args.batch_size, pin_memory=False,
                               drop_last=True, collate_fn=collate_fn)
