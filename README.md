@@ -31,4 +31,8 @@ dataset/neu/wav/acriil_neu_00000097.wav|모든 것을 공개할 수 없으나 �
 dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 좋다.
  ```
 
-## Training
+## How to use
+
+### training
+
+### inference
