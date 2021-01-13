@@ -49,6 +49,7 @@ dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 
   ```
   
   4) Edit file list
+  
   Data sets have "\ufeff" So edit file list
   ```
   python edit_filelists.py
