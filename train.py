@@ -50,6 +50,8 @@ from common.utils import ParseFromConfigFile
 import dllogger as DLLogger
 from dllogger import StdOutBackend, JSONStreamBackend, Verbosity
 
+from Logger import Logger
+
 from scipy.io.wavfile import write as write_wav
 
 from apex import amp
@@ -372,7 +374,7 @@ def adjust_learning_rate(iteration, epoch, optimizer, learning_rate,
 def main():
 
     #-----------------------------------------------------------------------------------
-    # sys.stdout = open('check.txt', 'w')
+    # sys.stdout = open('GST_log.txt', 'w')
     #-----------------------------------------------------------------------------------
 
     parser = argparse.ArgumentParser(description='PyTorch Tacotron 2 Training')

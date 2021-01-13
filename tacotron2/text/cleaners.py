@@ -86,10 +86,10 @@ def transliteration_cleaners(text):
 
 
 def korean_cleaners(text):
-  # print('1 :', text)
+  #print('1 :', text)
 
   #text = g2p(text)
-  print('2 :', text)
+  #print('2 :', text)
   text = ko_tokenize(text, as_id=False)
   #print('3 :', text)
   return text
