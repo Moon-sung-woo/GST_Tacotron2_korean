@@ -38,22 +38,24 @@ dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 
 ### training
  1) Download [Dataset](http://aicompanion.or.kr/kor/main/)
  
- 2) Make raw file to wav file
+ 2) Make path like (dataset/fea/wav/acriil_fea_00002629.wav)
+ 
+ 3) Make raw file to wav file
   ```
   python raw2wav.py
   ```
   
- 3) Preprecess audio
+ 4) Preprecess audio
   ```
   python preprocess_audio.py -f [filelist name]
   ```
   
-  4) GST Tacotron train
+  5) GST Tacotron train
   ```
   python -m multiproc train.py -m Tacotron2 -o ./output/ -lr 1e-3 --epochs 1501 -bs 48 --weight-decay 1e-6 --grad-clip-thresh 1.0 --cudnn-enabled --log-file nvlog.json --anneal-steps 500 1000 1500 --anneal-factor 0.1
   ```
   
-  5) Wave Glow train
+  6) Wave Glow train
   ```
   python -m multiproc train.py -m WaveGlow -o ./output/ -lr 1e-4 --epochs 1501 -bs 4 --segment-length  8000 --weight-decay 0 --grad-clip-thresh 3.4028234663852886e+38 --cudnn-enabled --cudnn-benchmark --log-file nvlog.json
   ```
