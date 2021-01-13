@@ -1,6 +1,8 @@
 # GST Tacotron2 KOREAN
 
 ## DATA
+### 0. Code reference
+ * [NVIDIA](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/Tacotron2) [jinhan](https://github.com/jinhan/tacotron2-gst)의 코드를 참고하여 만들었습니다.
 ### 1. Dataset 
   * [Korean Speech Emotion Dataset](http://aicompanion.or.kr/kor/main/)
   * Single Female Voice Actor recorded six diffrent emotions(neutral, happy, sad, angry, disgust, fearful), each with 3,000 sentences. Total 30 hours
