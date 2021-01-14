@@ -61,3 +61,5 @@ dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 
   ```
 
 ### inference
+
+학습중에 있습니다.
