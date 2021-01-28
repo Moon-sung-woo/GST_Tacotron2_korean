@@ -61,5 +61,13 @@ dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 
   ```
 
 ### inference
+1) Write the sentence you want in the text.txt file.
 
-학습중에 있습니다.
+2) Generate audio
+```
+python inference.py --tacotron2 <tacotron checkpoint path> --max-decoder-steps 2000 --waveglow <waveglow checkpoing path> -o <output path> --include-warmup -i text.txt --fp16 --ref_mel <reference audio path>
+
+(example)
+python inference.py --tacotron2 output/checkpoint_Tacotron2_300.pt --max-decoder-steps 2000 --waveglow output/checkpoint_WaveGlow_300.pt -o output/ --include-warmup -i text.txt --fp16 --ref_mel dataset/sur/wav/acriil_sur_00000808.wav
+```
+3) Check output path
