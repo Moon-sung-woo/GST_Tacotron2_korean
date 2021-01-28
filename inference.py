@@ -58,7 +58,7 @@ def parse_args(parser):
                         help='full path to the WaveGlow model checkpoint file')
     parser.add_argument('-s', '--sigma-infer', default=0.9, type=float)
     parser.add_argument('-d', '--denoising-strength', default=0.01, type=float)
-    parser.add_argument('-sr', '--sampling-rate', default=22050, type=int,
+    parser.add_argument('-sr', '--sampling-rate', default=16000, type=int,
                         help='Sampling rate')
 
     run_mode = parser.add_mutually_exclusive_group()
@@ -157,7 +157,7 @@ def prepare_input_sequence(texts, cpu_run=False):
     d = []
     for i,text in enumerate(texts):
         d.append(torch.IntTensor(
-            text_to_sequence(text, ['english_cleaners'])[:]))
+            text_to_sequence(text, ['korean_cleaners'])[:]))
 
     text_padded, input_lengths = pad_sequences(d)
     if not cpu_run:

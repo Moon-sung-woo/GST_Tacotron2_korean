@@ -19,7 +19,7 @@ def parse_args(parser):
                         help='Type of text cleaners for input text')
     parser.add_argument('--max-wav-value', default=32768.0, type=float,
                         help='Maximum audiowave value')
-    parser.add_argument('--sampling-rate', default=22050, type=int,
+    parser.add_argument('--sampling-rate', default=16000, type=int,
                         help='Sampling rate')
     parser.add_argument('--filter-length', default=1024, type=int,
                         help='Filter length')
