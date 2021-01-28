@@ -2,7 +2,7 @@
 
 ## DATA
 ### 0. Code reference
- * [NVIDIA](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/Tacotron2) [jinhan](https://github.com/jinhan/tacotron2-gst)의 코드를 참고하여 만들었습니다.
+ * [NVIDIA](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/Tacotron2) ,  [jinhan](https://github.com/jinhan/tacotron2-gst)의 코드를 참고하여 만들었습니다.
 ### 1. Dataset 
   * [Korean Speech Emotion Dataset](http://aicompanion.or.kr/kor/main/)
   * Single Female Voice Actor recorded six diffrent emotions(neutral, happy, sad, angry, disgust, fearful), each with 3,000 sentences. Total 30 hours
@@ -61,3 +61,13 @@ dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 
   ```
 
 ### inference
+1) Write the sentence you want in the text.txt file.
+
+2) Generate audio
+```
+python inference.py --tacotron2 <tacotron checkpoint path> --max-decoder-steps 2000 --waveglow <waveglow checkpoing path> -o <output path> --include-warmup -i text.txt --fp16 --ref_mel <reference audio path>
+
+(example)
+python inference.py --tacotron2 output/checkpoint_Tacotron2_300.pt --max-decoder-steps 2000 --waveglow output/checkpoint_WaveGlow_300.pt -o output/ --include-warmup -i text.txt --fp16 --ref_mel dataset/sur/wav/acriil_sur_00000808.wav
+```
+3) Check output path
