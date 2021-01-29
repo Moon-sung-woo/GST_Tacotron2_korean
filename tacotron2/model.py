@@ -31,11 +31,16 @@ from torch import nn
 from torch.nn import functional as F
 import sys
 from os.path import abspath, dirname
+from scipy.io.wavfile import read
+import numpy as np
+
 # enabling modules discovery from global entrypoint
 sys.path.append(abspath(dirname(__file__)+'/../'))
 from common.layers import ConvNorm, LinearNorm
 from common.utils import to_gpu, get_mask_from_lengths
 from tacotron2.modules import GST
+
+from tacotron2.data_function import TextMelLoader
 
 
 class LocationLayer(nn.Module):
@@ -689,10 +694,24 @@ class Tacotron2(nn.Module):
             output_lengths)
 
 
-    def infer(self, inputs, input_lengths):
+    def infer(self, inputs, input_lengths, ref_mel):
 
         embedded_inputs = self.embedding(inputs).transpose(1, 2)
-        encoder_outputs = self.encoder.infer(embedded_inputs, input_lengths)
+        transcript_outputs = self.encoder.infer(embedded_inputs, input_lengths)
+
+        # text_mel_loader = TextMelLoader
+        # ref_mel = text_mel_loader.get_mel('dataset/hap/wav/acriil_hap_00000768.wav')
+
+        #ref_mel = self.get_mel('dataset/hap/wav/acriil_hap_00000768.wav')
+
+        ref_mel = torch.unsqueeze(ref_mel, 0) # [80, x] -> [1, 80, x]
+        ref_mel = ref_mel.half().cuda()
+
+        gst_outputs = self.gst(ref_mel)
+        gst_outputs = gst_outputs.expand_as(transcript_outputs)
+        encoder_outputs = transcript_outputs + gst_outputs
+
+
         mel_outputs, gate_outputs, alignments, mel_lengths = self.decoder.infer(
             encoder_outputs, input_lengths)
 
@@ -701,5 +720,7 @@ class Tacotron2(nn.Module):
 
         BS = mel_outputs_postnet.size(0)
         alignments = alignments.unfold(1, BS, BS).transpose(0,2)
+
+
 
         return mel_outputs_postnet, mel_lengths, alignments

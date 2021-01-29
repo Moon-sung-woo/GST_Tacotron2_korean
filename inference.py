@@ -41,6 +41,8 @@ import time
 import dllogger as DLLogger
 from dllogger import StdOutBackend, JSONStreamBackend, Verbosity
 
+from common.utils import load_wav_to_torch
+from common.layers import TacotronSTFT
 from waveglow.denoiser import Denoiser
 
 def parse_args(parser):
@@ -61,6 +63,19 @@ def parse_args(parser):
     parser.add_argument('-sr', '--sampling-rate', default=16000, type=int,
                         help='Sampling rate')
 
+    parser.add_argument('--E', type=int, default=512)
+    parser.add_argument('--ref_enc_filters', nargs='*', default=[32, 32, 64, 64, 128, 128])
+    parser.add_argument('--ref_enc_size', nargs='*', default=[3, 3])
+    parser.add_argument('--ref_enc_strides', nargs='*', default=[2, 2])
+    parser.add_argument('--ref_enc_pad', nargs='*', default=[1, 1])
+    parser.add_argument('--ref_enc_gru_size', type=int, default=512 // 2)
+
+    # Style Token Layer
+    parser.add_argument('--token_num', type=int, default=10)
+    parser.add_argument('--num_heads', type=int, default=8)
+
+    parser.add_argument('--n_mels', type=int, default=80)
+
     run_mode = parser.add_mutually_exclusive_group()
     run_mode.add_argument('--fp16', action='store_true',
                         help='Run inference with mixed precision')
@@ -73,6 +88,9 @@ def parse_args(parser):
                         help='Include warmup')
     parser.add_argument('--stft-hop-length', type=int, default=256,
                         help='STFT hop length for estimating audio length from mel size')
+
+    parser.add_argument('--ref_mel', type=str, required=True,
+                        help='style ref mel')
 
     return parser
 
@@ -169,6 +187,20 @@ def prepare_input_sequence(texts, cpu_run=False):
 
     return text_padded, input_lengths
 
+def load_mel(path):
+    stft = TacotronSTFT()
+    audio, sampling_rate = load_wav_to_torch(path)
+    if sampling_rate != 16000:
+        raise ValueError("{} SR doesn't match target {} SR".format(
+            sampling_rate, stft.sampling_rate))
+    audio_norm = audio / 32768.0 # hparams.max_wav_value
+    audio_norm = audio_norm.unsqueeze(0)
+    audio_norm = torch.autograd.Variable(audio_norm, requires_grad=False)
+    melspec = stft.mel_spectrogram(audio_norm)
+    #melspec = melspec.cuda()
+    melspec = torch.squeeze(melspec, 0)
+    return melspec
+
 
 class MeasureTime():
     def __init__(self, measurements, key, cpu_run=False):
@@ -205,7 +237,7 @@ def main():
     DLLogger.log(step="PARAMETER", data={'model_name':'Tacotron2_PyT'})
 
     tacotron2 = load_and_setup_model('Tacotron2', parser, args.tacotron2,
-                                     args.fp16, args.cpu, forward_is_infer=True)
+                                     args.fp16, args.cpu, forward_is_infer=True) # forward is infer를 해줌으로써 tacotron model의 infer로 간다.
     waveglow = load_and_setup_model('WaveGlow', parser, args.waveglow,
                                     args.fp16, args.cpu, forward_is_infer=True)
     denoiser = Denoiser(waveglow)
@@ -222,15 +254,20 @@ def main():
         print("Could not read file")
         sys.exit(1)
 
+    #-------------------------------------------------------------------------------------------------------------------
+    ref_mel = load_mel(args.ref_mel)
+    #-------------------------------------------------------------------------------------------------------------------
+
+
     if args.include_warmup:
-        sequence = torch.randint(low=0, high=148, size=(1,50)).long()
+        sequence = torch.randint(low=0, high=80, size=(1,50)).long()
         input_lengths = torch.IntTensor([sequence.size(1)]).long()
         if not args.cpu:
             sequence = sequence.cuda()
             input_lengths = input_lengths.cuda()
         for i in range(3):
             with torch.no_grad():
-                mel, mel_lengths, _ = jitted_tacotron2(sequence, input_lengths)
+                mel, mel_lengths, _ = jitted_tacotron2(sequence, input_lengths, ref_mel)
                 _ = waveglow(mel)
 
     measurements = {}
@@ -238,7 +275,7 @@ def main():
     sequences_padded, input_lengths = prepare_input_sequence(texts, args.cpu)
 
     with torch.no_grad(), MeasureTime(measurements, "tacotron2_time", args.cpu):
-        mel, mel_lengths, alignments = jitted_tacotron2(sequences_padded, input_lengths)
+        mel, mel_lengths, alignments = jitted_tacotron2(sequences_padded, input_lengths, ref_mel)
 
     with torch.no_grad(), MeasureTime(measurements, "waveglow_time", args.cpu):
         audios = waveglow(mel, sigma=args.sigma_infer)
