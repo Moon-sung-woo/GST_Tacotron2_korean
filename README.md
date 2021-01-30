@@ -74,3 +74,6 @@ python inference.py --tacotron2 output/checkpoint_Tacotron2_300.pt --max-decoder
 
 ## Result
 ![image](https://user-images.githubusercontent.com/53896208/106356992-ca6e0300-6346-11eb-8bef-85be19548d6e.png)
+
+## Sample Audio
+추후 올릴 예정
