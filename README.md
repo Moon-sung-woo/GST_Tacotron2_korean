@@ -71,3 +71,9 @@ python inference.py --tacotron2 <tacotron checkpoint path> --max-decoder-steps 2
 python inference.py --tacotron2 output/checkpoint_Tacotron2_300.pt --max-decoder-steps 2000 --waveglow output/checkpoint_WaveGlow_300.pt -o output/ --include-warmup -i text.txt --fp16 --ref_mel dataset/sur/wav/acriil_sur_00000808.wav
 ```
 3) Check output path
+
+## Result
+![image](https://user-images.githubusercontent.com/53896208/106356992-ca6e0300-6346-11eb-8bef-85be19548d6e.png)
+
+## Sample Audio
+추후 올릴 예정
