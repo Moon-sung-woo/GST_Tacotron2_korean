@@ -1,5 +1,11 @@
 # GST Tacotron2 KOREAN
 
+## Requirement
+```
+torch = 1.6.0
+librosa = 0.8.0
+```
+
 ## DATA
 ### 0. Code reference
  * [NVIDIA](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/Tacotron2) ,  [jinhan](https://github.com/jinhan/tacotron2-gst)의 코드를 참고하여 만들었습니다.
@@ -76,4 +82,5 @@ python inference.py --tacotron2 output/checkpoint_Tacotron2_300.pt --max-decoder
 ![image](https://user-images.githubusercontent.com/53896208/106356992-ca6e0300-6346-11eb-8bef-85be19548d6e.png)
 
 ## Sample Audio
-추후 올릴 예정
+
+You can check sample Audio file from sample_audio folder in this project
