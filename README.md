@@ -32,6 +32,12 @@ dataset/hap/wav/acriil_hap_00003104.wav|경암은 푸른 수풀 속에 거뭇거
 dataset/neu/wav/acriil_neu_00000097.wav|모든 것을 공개할 수 없으나 앞으로 국민화합과 화해조치들을 강구해 나갈 것이다.
 dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 좋다.
  ```
+ 
+## Requirement
+```
+torch = 1.6.0
+librosa = 0.8.0
+```
 
 ## How to use
 
@@ -76,4 +82,5 @@ python inference.py --tacotron2 output/checkpoint_Tacotron2_300.pt --max-decoder
 ![image](https://user-images.githubusercontent.com/53896208/106356992-ca6e0300-6346-11eb-8bef-85be19548d6e.png)
 
 ## Sample Audio
-추후 올릴 예정
+
+You can check sample Audio file from sample_audio folder in this project
