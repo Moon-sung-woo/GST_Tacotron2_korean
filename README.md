@@ -1,11 +1,5 @@
 # GST Tacotron2 KOREAN
 
-## Requirement
-```
-torch = 1.6.0
-librosa = 0.8.0
-```
-
 ## DATA
 ### 0. Code reference
  * [NVIDIA](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/Tacotron2) ,  [jinhan](https://github.com/jinhan/tacotron2-gst)의 코드를 참고하여 만들었습니다.
@@ -38,6 +32,12 @@ dataset/hap/wav/acriil_hap_00003104.wav|경암은 푸른 수풀 속에 거뭇거
 dataset/neu/wav/acriil_neu_00000097.wav|모든 것을 공개할 수 없으나 앞으로 국민화합과 화해조치들을 강구해 나갈 것이다.
 dataset/fea/wav/acriil_fea_00002629.wav|우리집 개와 고양이는 사이가 좋다.
  ```
+ 
+## Requirement
+```
+torch = 1.6.0
+librosa = 0.8.0
+```
 
 ## How to use
 
